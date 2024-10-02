@@ -100,9 +100,13 @@ export class PollComponent implements OnInit {
       this.dataRepoService.createOrUpdateVotingsAndDeleteParticipantsById
       (this.model.appointmentId, apiParticipants, apiParticipantsToDelete)
         .then((result: Participant[]) => {
-          this.logger.debug(`Daten der Teilnehmer erfolgreich versendet - Rückgabe von der API ist: ${JSON.stringify(result)}`, result);
-          this.formHelper.deleteParticipantForm();
-          this.initModel();
+          if (environment.useInIframe) {
+            window.top.postMessage(result, '*');
+          } else {
+            this.logger.debug(`Daten der Teilnehmer erfolgreich versendet - Rückgabe von der API ist: ${JSON.stringify(result)}`, result);
+            this.formHelper.deleteParticipantForm();
+            this.initModel();
+          }
         }).catch((err: string) => {
         this.apiError = {
           message: `Fehler beim Abschicken der Daten zum Server: ${err}`,
@@ -113,9 +117,13 @@ export class PollComponent implements OnInit {
       this.dataRepoService.deleteParticipantsOfAppointmentById
       (this.model.appointmentId, apiParticipantsToDelete)
         .then(() => {
-          this.logger.debug(`Löschung der Teilnehmer erfolgreich durchgeführt`);
-          this.formHelper.deleteParticipantForm();
-          this.initModel();
+          if (environment.useInIframe) {
+            window.top.postMessage('done', '*');
+          } else {
+            this.logger.debug(`Löschung der Teilnehmer erfolgreich durchgeführt`);
+            this.formHelper.deleteParticipantForm();
+            this.initModel();
+          }
         }).catch((err: string) => {
         this.apiError = {
           message: `Fehler beim Abschicken der Daten zum Server: ${err}`,
