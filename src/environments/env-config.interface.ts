@@ -37,4 +37,6 @@ export interface EnvConfig {
   readonly surveyLinkUser?: string;
   /** Media type of api **/
   readonly apiMediaType: string;
+  /** For creating and updating appointments in iframe. Send data to top window instead of showing links. **/
+  readonly useInIframe?: boolean;
 }

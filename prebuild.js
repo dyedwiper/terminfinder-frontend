@@ -99,7 +99,8 @@ fs.readFile('./src/environments/environment.ts.tmpl', 'utf8', function (err, dat
     .replace('@TOS@', process.env.TOS ? process.env.TOS : `\`${tos}\``)
     .replace('@ACCESSIBILITY@', process.env.ACCESSIBILITY ? process.env.ACCESSIBILITY : `\`${accessibility}\``)
     .replace('@API_REQUEST_TIMEOUT_IN_MS@', '20000')
-    .replace('@API_MEDIA_TYPE@', reformat(process.env.API_MEDIA_TYPE ? process.env.API_MEDIA_TYPE : 'application/terminfinder.api-v1+json'));
+    .replace('@API_MEDIA_TYPE@', reformat(process.env.API_MEDIA_TYPE ? process.env.API_MEDIA_TYPE : 'application/terminfinder.api-v1+json'))
+    .replace('@USE_IN_IFRAME@', isBoolean(process.env.USE_IN_IFRAME) ? process.env.USE_IN_IFRAME : 'false');
 
   fs.writeFile('./src/environments/environment.ts', data, 'utf8', function (err) {
     if (err) {

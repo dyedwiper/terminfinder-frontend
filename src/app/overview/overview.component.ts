@@ -6,6 +6,7 @@ import {Router} from '@angular/router';
 import {Appointment as ApiAppointment, SuggestedDate as ApiSuggestedDate} from '../shared/models/api-data-v1-dto';
 import {DataRepositoryService} from '../shared/services/data-service';
 import {ModelTransformerService} from '../shared/services/transformer';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-overview',
@@ -36,11 +37,15 @@ export class OverviewComponent implements OnInit {
 
     this.dataRepoService.createAppointment(apiAppointment)
       .then((data: ApiAppointment) => {
-        this.model = ModelTransformerService.transformApiAppointmentToAppointment(data);
-        this.appStateService.updateAppointment(this.model);
-        this.apiError = null;
-        this.logger.debug(`Umfrage erstellt mit den Werten: ${JSON.stringify(apiAppointment)}`);
-        this.router.navigate(['/links']).then();
+        if (environment.useInIframe) {
+          window.top.postMessage(data, '*');
+        } else {
+          this.model = ModelTransformerService.transformApiAppointmentToAppointment(data);
+          this.appStateService.updateAppointment(this.model);
+          this.apiError = null;
+          this.logger.debug(`Umfrage erstellt mit den Werten: ${JSON.stringify(apiAppointment)}`);
+          this.router.navigate(['/links']).then();
+        }
       })
       .catch((err: any) => {
         this.apiError = {
@@ -57,12 +62,16 @@ export class OverviewComponent implements OnInit {
 
     this.dataRepoService.updateAppointmentAndDeleteSuggestedDates(apiAppointment, apiSuggestedDatesToDelete)
       .then((data: ApiAppointment) => {
-        this.model = ModelTransformerService.transformApiAppointmentToAppointment(data);
-        this.appStateService.updateAppointment(this.model);
-        this.apiError = null;
-        this.logger.debug(`Umfrage ändern mit den Werten: ${JSON.stringify(apiAppointment)}}`);
-        this.logger.debug(`Terminvorschlag/Terminvorschläge lösche mit den Werten: ${JSON.stringify(apiSuggestedDatesToDelete)}`);
-        this.router.navigate(['/admin/links']).then();
+        if (environment.useInIframe) {
+          window.top.postMessage(data, '*');
+        } else {
+          this.model = ModelTransformerService.transformApiAppointmentToAppointment(data);
+          this.appStateService.updateAppointment(this.model);
+          this.apiError = null;
+          this.logger.debug(`Umfrage ändern mit den Werten: ${JSON.stringify(apiAppointment)}}`);
+          this.logger.debug(`Terminvorschlag/Terminvorschläge lösche mit den Werten: ${JSON.stringify(apiSuggestedDatesToDelete)}`);
+          this.router.navigate(['/admin/links']).then();
+        }
       })
       .catch((err: any) => {
         this.apiError = {
