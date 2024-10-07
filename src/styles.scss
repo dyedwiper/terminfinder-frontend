@@ -2,6 +2,7 @@
 @import "bootstrap/scss/functions";
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap/scss/mixins';
+@import 'ngx-toastr/toastr';
 
 @font-face {
   font-family: Roboto;
@@ -148,11 +149,13 @@ a,
   @include focus-outline;
 }
 
-.btn-secondary:focus,
-.btn-primary:focus {
-  box-shadow: none !important;
-  outline: .25rem solid $primary !important;
-  outline-offset: .25rem;
+.btn-primary,
+.btn-secondary {
+  &:focus {
+    box-shadow: none !important;
+    outline: .25rem solid $primary !important;
+    outline-offset: .25rem;
+  }
 }
 
 .btn-secondary {

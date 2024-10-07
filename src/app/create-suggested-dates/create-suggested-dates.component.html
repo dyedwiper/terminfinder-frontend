@@ -52,6 +52,7 @@
               <!-- start date -->
               <div
                 class="col px-1 px-lg-3 my-1 form-group invalid-message-highlight"
+                aria-live="assertive"
                 [ngClass]="{
                   'has-error': getStartDateOfSuggestedStartDateByIndex(i).invalid
                      && (getStartDateOfSuggestedStartDateByIndex(i).dirty || getStartDateOfSuggestedStartDateByIndex(i).touched),
@@ -97,7 +98,8 @@
                       #mobileStartDateInput
                       required
                       (input)="parseAndSetDate('startDate', mobileStartDateInput.value, i)"
-                      [disabled]="isSuggestedDateFromDatabase(i)"
+                      [attr.aria-disabled]="isSuggestedDateFromDatabase(i)"
+                      [ngClass]="{'disabled': isSuggestedDateFromDatabase(i)}"
                       [value]="getDateAsIsoString('startDate', i)"
                       appAutoFocus
                       class="form-control date"
@@ -187,7 +189,8 @@
                       <input
                         #mobileEndDateInput
                         (input)="parseAndSetDate('endDate', mobileEndDateInput.value, i)"
-                        [disabled]="isSuggestedDateFromDatabase(i)"
+                        [attr.aria-disabled]="isSuggestedDateFromDatabase(i)"
+                      [ngClass]="{'disabled': isSuggestedDateFromDatabase(i)}"
                         [value]="getDateAsIsoString('endDate', i)"
                         appAutoFocus
                         class="form-control date" data-target-input="nearest" id="suggested-date-end-date-{{i}}"
@@ -228,7 +231,8 @@
                       <!--suppress XmlDuplicatedId these duplicate ids  will never appear on the page at the same time-->
                       <button
                         (click)="closeAllControlsExcept(i); setShowStartTimesControlValue(i, true);"
-                        [disabled]="isSuggestedDateFromDatabase(i)"
+                        [attr.aria-disabled]="isSuggestedDateFromDatabase(i)"
+                      [ngClass]="{'disabled': isSuggestedDateFromDatabase(i)}"
                         class="form-control col date"
                         data-id="addTimesButton"
                         type="button"
@@ -281,7 +285,8 @@
                     <input
                       #mobileStartTimeInput
                       (input)="parseAndSetTime('startTime', mobileStartTimeInput.value, i)"
-                      [disabled]="isSuggestedDateFromDatabase(i)"
+                      [attr.aria-disabled]="isSuggestedDateFromDatabase(i)"
+                      [ngClass]="{'disabled': isSuggestedDateFromDatabase(i)}"
                       [value]="getTimeAsString('startTime', i)"
                       appAutoFocus
                       class="form-control time"
@@ -335,7 +340,8 @@
                     <input
                       #mobileStartDateEndTimeInput
                       (input)="parseAndSetTime('startDateEndTime', mobileStartDateEndTimeInput.value, i)"
-                      [disabled]="isSuggestedDateFromDatabase(i)"
+                      [attr.aria-disabled]="isSuggestedDateFromDatabase(i)"
+                      [ngClass]="{'disabled': isSuggestedDateFromDatabase(i)}"
                       [value]="getTimeAsString('startDateEndTime', i)"
                       appAutoFocus
                       class="form-control time"
@@ -356,7 +362,8 @@
           <div class="p-0 col text-center mt-1 align-items-start">
             <button
               (click)="showSuggestedDateEndDateOnDifferentDayForm(i)"
-              [disabled]="isSuggestedDateFromDatabase(i)"
+              [attr.aria-disabled]="isSuggestedDateFromDatabase(i)"
+                      [ngClass]="{'disabled': isSuggestedDateFromDatabase(i)}"
               class="btn btn-default btn-transparent btn-with-image btn-suggested-date-end-at-different-day font-weight-bold mt-1 mb-1"
               data-id="endAtOtherDayButton"
               type="button"
@@ -386,7 +393,8 @@
                     <!--suppress XmlDuplicatedId these duplicate ids  will never appear on the page at the same time-->
                     <button
                       (click)="closeAllControlsExcept(i); setShowStartTimesControlValue(i, true);  setShowEndDateEndTimeControlValue(i, true)"
-                      [disabled]="isSuggestedDateFromDatabase(i)"
+                      [attr.aria-disabled]="isSuggestedDateFromDatabase(i)"
+                      [ngClass]="{'disabled': isSuggestedDateFromDatabase(i)}"
                       class="form-control col date"
                       data-id="addTimesWithEndOnOtherDay"
                       type="button"
@@ -438,7 +446,8 @@
                     <input
                       #mobileStartTimeInput
                       (input)="parseAndSetTime('startTime', mobileStartTimeInput.value, i)"
-                      [disabled]="isSuggestedDateFromDatabase(i)"
+                      [attr.aria-disabled]="isSuggestedDateFromDatabase(i)"
+                      [ngClass]="{'disabled': isSuggestedDateFromDatabase(i)}"
                       [value]="getTimeAsString('startTime', i)"
                       appAutoFocus
                       class="form-control time"
@@ -492,7 +501,8 @@
                     <input
                       #mobileEndDateEndTimeInput
                       (input)="parseAndSetTime('endDateEndTime', mobileEndDateEndTimeInput.value, i)"
-                      [disabled]="isSuggestedDateFromDatabase(i)"
+                      [attr.aria-disabled]="isSuggestedDateFromDatabase(i)"
+                      [ngClass]="{'disabled': isSuggestedDateFromDatabase(i)}"
                       [value]="getTimeAsString('endDateEndTime', i)"
                       appAutoFocus
                       class="form-control time"
@@ -507,11 +517,45 @@
             }
           </div>
         }
+        <div class="my-2 divider-single"></div>
+        <!-- description (optional) for this date entry -->
+        <div class="row">
+          <div
+            [ngClass]="{'has-error': getDescriptionByIndex(i).invalid
+              && (getDescriptionByIndex(i).dirty || getDescriptionByIndex(i).touched)}"
+            class="col form-group invalid-message-highlight"
+          >
+            <label data-id="descriptionLabel" for="suggested-date-description-{{i}}">
+              {{ 'poll.details.description.descriptionOptional' | translate }}
+            </label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text input-group-divider">
+                  <img ngSrc="assets/description.svg" alt="Sprechblase" height="height" width="width">
+                </div>
+              </div>
+              <input
+                id="suggested-date-description-{{i}}"
+                data-id="descriptionInput"
+                class="form-control"
+                formControlName="description"
+                placeholder="{{ 'poll.details.description.description' | translate }}"
+                type="text"
+                aria-describedby="description-too-long"
+              >
+            </div>
+            @if (!!getDescriptionByIndex(i).invalid) {
+              <div class="invalid-message" id="description-too-long" data-id="descriptionTooLong">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'poll.details.description.tooLong' | translate }}
+              </div>
+            }
+          </div>
+        </div>
         <!-- error messages for this date entry -->
-        @if (getSuggestedDatesForm(i).invalid) {
+        @if (getSuggestedDatesForm(i).dirty && !!getSuggestedDatesForm(i).errors) {
           <div class="row mb-2">
-            <div [ngClass]="{'has-error': getSuggestedDatesForm(i).invalid
-                  && (getSuggestedDatesForm(i).dirty || getSuggestedDatesForm(i).touched)}"
+            <div [ngClass]="{'has-error': getSuggestedDatesForm(i).invalid}"
                  class="col my-1 px-1 px-lg-3 my-1 form-group">
               @if (!!getSuggestedDatesForm(i).errors?.startDateAfterEndDate) {
                 <div class="invalid-message" id="start-date-after-end-date">
@@ -581,7 +625,7 @@
       (forward)="onSubmit()"
       [hasBackwardButton]="true"
       [hasForwardButton]="true"
-      [invalid]="datesForm.invalid" backwardText="{{ 'navigation.back' | translate }}"
+      [isInvalid]="datesForm.invalid" backwardText="{{ 'navigation.back' | translate }}"
       forwardText="{{ 'navigation.next' | translate }}"
     ></app-navigation>
   </form>

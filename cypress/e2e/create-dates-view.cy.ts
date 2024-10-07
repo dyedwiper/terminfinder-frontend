@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
+import values from "../fixtures/values.json";
 
 dayjs.extend(utc);
 
@@ -20,11 +21,13 @@ context('create-dates-view', () => {
       cy.get('[data-id=startDateInput]');
       cy.get('[data-id=addTimesButton]');
       cy.get('[data-id=endAtOtherDayButton]');
+      cy.get('[data-id=descriptionLabel]');
+      cy.get('[data-id=descriptionInput]');
       cy.get('[data-id=addSuggestedDateButton]');
       cy.get('[data-id=back]')
         .should('be.enabled');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=footer]');
     });
   });
@@ -32,7 +35,7 @@ context('create-dates-view', () => {
   describe('Form works correctly', () => {
     it('Accepts one valid', () => {
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
 
       cy.get('[data-id=addDetailsHeading]')
         .click();
@@ -90,7 +93,7 @@ context('create-dates-view', () => {
       cy.get('[data-id=startTimeInput]')
         .type('25');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=startTimeInput]')
         .clear();
 
@@ -111,14 +114,14 @@ context('create-dates-view', () => {
       cy.get('[data-id=startTimeInput]')
         .type('2401');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=startTimeInput]')
         .clear();
 
       cy.get('[data-id=startTimeInput]')
         .type('010000');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=startTimeInput]')
         .clear();
     });
@@ -139,7 +142,7 @@ context('create-dates-view', () => {
       cy.get('[data-id=endTimeInput]')
         .type('10');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endTimeInput]')
         .clear();
 
@@ -153,35 +156,35 @@ context('create-dates-view', () => {
       cy.get('[data-id=endTimeInput]')
         .type('-1');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endTimeInput]')
         .clear();
 
       cy.get('[data-id=endTimeInput]')
         .type('250');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endTimeInput]')
         .clear();
 
       cy.get('[data-id=endTimeInput]')
         .type('0');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endTimeInput]')
         .clear();
 
       cy.get('[data-id=endTimeInput]')
         .type('00');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endTimeInput]')
         .clear();
 
       cy.get('[data-id=endTimeInput]')
         .type('010000');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endTimeInput]')
         .clear();
     });
@@ -201,14 +204,14 @@ context('create-dates-view', () => {
       cy.get('[data-id=endDateInput]')
         .type(dayjs().add(1, 'd').format('DD.MM.YYYY'));
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endDateInput]')
         .clear();
 
       cy.get('[data-id=endDateInput]')
         .type(dayjs().add(2, 'd').format('DD.MM.YYYY'));
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endDateInput]')
         .clear();
 
@@ -222,14 +225,14 @@ context('create-dates-view', () => {
       cy.get('[data-id=endDateInput]')
         .type('0');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endDateInput]')
         .clear();
 
       cy.get('[data-id=endDateInput]')
         .type('a');
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=endDateInput]')
         .clear();
     });
@@ -263,7 +266,7 @@ context('create-dates-view', () => {
       cy.get('[data-id=startTimeInputSecondColumn]')
         .clear();
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
     });
 
     it('Does not accept current date and time', () => {
@@ -277,7 +280,7 @@ context('create-dates-view', () => {
       cy.get('[data-id=startTimeInput]')
         .type(dayjs().format('HH:mm'));
       cy.get('[data-id=next]')
-        .should('be.disabled');
+        .should('have.attr', 'aria-disabled', 'true');
       cy.get('[data-id=startTimeInput]')
         .clear();
 
@@ -318,6 +321,18 @@ context('create-dates-view', () => {
         .clear();
     });
 
+    it('Accepts valid description', () => {
+      cy.get('[data-id=descriptionInput]')
+        .type('Test-Beschreibung', {delay: 0})
+        .should('have.value', 'Test-Beschreibung');
+    });
+
+    it('Does not accept too long description', () => {
+      cy.get('[data-id=descriptionTooLong]').should('not.exist');
+      cy.get('[data-id=descriptionInput]')
+        .type(values.tooLongString, {delay: 0});
+      cy.get('[data-id=descriptionTooLong]');
+    });
   });
 
   describe('Adds new suggested date', () => {
